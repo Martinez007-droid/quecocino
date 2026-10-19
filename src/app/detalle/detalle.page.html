@@ -24,10 +24,11 @@
 
       <ion-button
         expand="block"
-        [fill]="esFavorita ? 'outline' : 'solid'"
+        [color]="esFavorita ? 'danger' : 'primary'"
         (click)="alternarFavorita()"
         [disabled]="guardando">
-        {{ esFavorita ? 'Quitar de favoritas' : 'Guardar en favoritas' }}
+        {{ guardando ? 'Guardando...' : (esFavorita ? '✔ Guardada · Toca para quitar' : '＋ Guardar en favoritas') }}
+
       </ion-button>
 
       <h3>Ingredientes</h3>

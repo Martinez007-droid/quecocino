@@ -25,6 +25,14 @@
 
 <body>
   <app-root></app-root>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function () {
+        navigator.serviceWorker.register('assets/sw.js', { scope: '/' });
+      });
+    }
+  </script>
 </body>
 
 </html>
