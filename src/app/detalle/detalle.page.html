@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Receta</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="contenido">
+    @if (cargando) {
+      <div class="ion-text-center"><ion-spinner></ion-spinner></div>
+    }
+
+    @if (error) {
+      <ion-text color="danger"><p>{{ error }}</p></ion-text>
+    }
+
+    @if (receta) {
+      <img [src]="receta.strMealThumb" [alt]="receta.strMeal" class="foto" />
+      <h2>{{ receta.strMeal }}</h2>
+      <p>{{ receta.strCategory }} · {{ receta.strArea }}</p>
+
+      <ion-button
+        expand="block"
+        [fill]="esFavorita ? 'outline' : 'solid'"
+        (click)="alternarFavorita()"
+        [disabled]="guardando">
+        {{ esFavorita ? 'Quitar de favoritas' : 'Guardar en favoritas' }}
+      </ion-button>
+
+      <h3>Ingredientes</h3>
+      <ion-list>
+        @for (ing of receta.ingredientes; track $index) {
+          <ion-item>
+            <ion-label>{{ ing.nombre }}</ion-label>
+            <ion-note slot="end">{{ ing.medida }}</ion-note>
+          </ion-item>
+        }
+      </ion-list>
+
+      <h3>Preparación</h3>
+      <p class="instrucciones">{{ receta.strInstructions }}</p>
+    }
+  </div>
+</ion-content>

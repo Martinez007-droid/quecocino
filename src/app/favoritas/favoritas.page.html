@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mis favoritas</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="contenido">
+    @if (cargando) {
+      <div class="ion-text-center"><ion-spinner></ion-spinner></div>
+    }
+
+    @if (error) {
+      <ion-text color="danger"><p>{{ error }}</p></ion-text>
+    }
+
+    @if (!cargando && !error && favoritas.length === 0) {
+      <ion-text color="medium"><p>Todavía no guardas ninguna receta.</p></ion-text>
+    }
+
+    <ion-list>
+      @for (receta of favoritas; track receta.idMeal) {
+        <ion-item button (click)="abrir(receta.idMeal)">
+          <ion-thumbnail slot="start">
+            <img [src]="receta.strMealThumb" [alt]="receta.strMeal" />
+          </ion-thumbnail>
+          <ion-label>{{ receta.strMeal }}</ion-label>
+          <ion-button slot="end" fill="clear" color="danger"
+            (click)="quitar(receta); $event.stopPropagation()">
+            Quitar
+          </ion-button>
+        </ion-item>
+      }
+    </ion-list>
+  </div>
+</ion-content>

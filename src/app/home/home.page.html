@@ -2,44 +2,47 @@
   <ion-toolbar>
     <ion-title>¿Qué cocino?</ion-title>
     <ion-buttons slot="end">
+      <ion-button (click)="irAFavoritas()">Favoritas</ion-button>
       <ion-button (click)="salir()">Salir</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-input
-    label="Ingrediente (en inglés)"
-    labelPlacement="floating"
-    placeholder="chicken, beef, rice..."
-    [(ngModel)]="ingrediente"
-    (keyup.enter)="buscar()">
-  </ion-input>
+  <div class="contenido">
+    <ion-input
+      label="Ingrediente (en inglés)"
+      labelPlacement="floating"
+      placeholder="chicken, beef, rice..."
+      [(ngModel)]="ingrediente"
+      (keyup.enter)="buscar()">
+    </ion-input>
 
-  <ion-button expand="block" (click)="buscar()" [disabled]="cargando">
-    Buscar recetas
-  </ion-button>
+    <ion-button expand="block" (click)="buscar()" [disabled]="cargando">
+      Buscar recetas
+    </ion-button>
 
-  @if (cargando) {
-    <div class="ion-text-center"><ion-spinner></ion-spinner></div>
-  }
-
-  @if (error) {
-    <ion-text color="danger"><p>{{ error }}</p></ion-text>
-  }
-
-  @if (buscado && !cargando && recetas.length === 0 && !error) {
-    <ion-text color="medium"><p>No encontré recetas con ese ingrediente.</p></ion-text>
-  }
-
-  <ion-list>
-    @for (receta of recetas; track receta.idMeal) {
-      <ion-item>
-        <ion-thumbnail slot="start">
-          <img [src]="receta.strMealThumb" [alt]="receta.strMeal" />
-        </ion-thumbnail>
-        <ion-label>{{ receta.strMeal }}</ion-label>
-      </ion-item>
+    @if (cargando) {
+      <div class="ion-text-center"><ion-spinner></ion-spinner></div>
     }
-  </ion-list>
+
+    @if (error) {
+      <ion-text color="danger"><p>{{ error }}</p></ion-text>
+    }
+
+    @if (buscado && !cargando && recetas.length === 0 && !error) {
+      <ion-text color="medium"><p>No encontré recetas con ese ingrediente.</p></ion-text>
+    }
+
+    <ion-list>
+      @for (receta of recetas; track receta.idMeal) {
+        <ion-item button (click)="abrir(receta.idMeal)">
+          <ion-thumbnail slot="start">
+            <img [src]="receta.strMealThumb" [alt]="receta.strMeal" />
+          </ion-thumbnail>
+          <ion-label>{{ receta.strMeal }}</ion-label>
+        </ion-item>
+      }
+    </ion-list>
+  </div>
 </ion-content>

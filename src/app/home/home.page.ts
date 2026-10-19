@@ -52,4 +52,12 @@ export class HomePage {
     await this.auth.logout();
     this.router.navigate(['/login']);
   }
+
+  abrir(id: string) {
+    this.router.navigate(['/detalle', id]);
+  }
+
+  irAFavoritas() {
+    this.router.navigate(['/favoritas']);
+  }
 }
