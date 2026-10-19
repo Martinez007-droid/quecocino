@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>¿Qué cocino?</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h2>Inicia sesión o crea tu cuenta</h2>
+
+  <ion-input
+    label="Correo"
+    labelPlacement="floating"
+    type="email"
+    [(ngModel)]="email">
+  </ion-input>
+
+  <ion-input
+    label="Contraseña"
+    labelPlacement="floating"
+    type="password"
+    [(ngModel)]="password">
+  </ion-input>
+
+@if (error) {
+  <ion-text color="danger">
+    <p>{{ error }}</p>
+  </ion-text>
+}
+
+  <ion-button expand="block" (click)="entrar()" [disabled]="cargando">
+    Entrar
+  </ion-button>
+  <ion-button expand="block" fill="outline" (click)="registrar()" [disabled]="cargando">
+    Crear cuenta
+  </ion-button>
+</ion-content>
