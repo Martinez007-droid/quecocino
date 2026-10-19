@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -19,7 +19,11 @@ export class LoginPage {
   error = '';
   cargando = false;
 
-  constructor(private auth: AuthService, private router: Router) {}
+  constructor(
+    private auth: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   async entrar() {
     await this.ejecutar(() => this.auth.login(this.email, this.password));
@@ -29,16 +33,31 @@ export class LoginPage {
     await this.ejecutar(() => this.auth.register(this.email, this.password));
   }
 
+  private conTiempo<T>(promesa: Promise<T>, ms = 10000): Promise<T> {
+    return new Promise<T>((resolve, reject) => {
+      const t = setTimeout(() => reject(new Error('tiempo agotado')), ms);
+      promesa.then(
+        v => { clearTimeout(t); resolve(v); },
+        e => { clearTimeout(t); reject(e); }
+      );
+    });
+  }
+
   private async ejecutar(accion: () => Promise<unknown>) {
     this.error = '';
     this.cargando = true;
+    this.cdr.detectChanges();
     try {
-      await accion();
+      await this.conTiempo(accion());
       this.router.navigate(['/home']);
     } catch (e: any) {
-      this.error = this.mensaje(e.code);
+      console.error('Error de autenticación:', e);
+      this.error = e?.message === 'tiempo agotado'
+        ? 'El servidor no respondió. Revisa tu conexión e intenta de nuevo.'
+        : this.mensaje(e?.code);
     } finally {
       this.cargando = false;
+      this.cdr.detectChanges();
     }
   }
 
@@ -48,6 +67,8 @@ export class LoginPage {
       case 'auth/email-already-in-use': return 'Ese correo ya está registrado.';
       case 'auth/weak-password': return 'La contraseña debe tener al menos 6 caracteres.';
       case 'auth/invalid-email': return 'El correo no es válido.';
+      case 'auth/network-request-failed': return 'Sin conexión. Revisa tu internet.';
+      case 'auth/too-many-requests': return 'Demasiados intentos. Espera un momento e intenta de nuevo.';
       default: return 'Ocurrió un error, intenta de nuevo.';
     }
   }
