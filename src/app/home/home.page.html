@@ -1,20 +1,45 @@
-<ion-header [translucent]="true">
+<ion-header>
   <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+    <ion-title>¿Qué cocino?</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="salir()">Salir</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding">
+  <ion-input
+    label="Ingrediente (en inglés)"
+    labelPlacement="floating"
+    placeholder="chicken, beef, rice..."
+    [(ngModel)]="ingrediente"
+    (keyup.enter)="buscar()">
+  </ion-input>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-button expand="block" (click)="buscar()" [disabled]="cargando">
+    Buscar recetas
+  </ion-button>
+
+  @if (cargando) {
+    <div class="ion-text-center"><ion-spinner></ion-spinner></div>
+  }
+
+  @if (error) {
+    <ion-text color="danger"><p>{{ error }}</p></ion-text>
+  }
+
+  @if (buscado && !cargando && recetas.length === 0 && !error) {
+    <ion-text color="medium"><p>No encontré recetas con ese ingrediente.</p></ion-text>
+  }
+
+  <ion-list>
+    @for (receta of recetas; track receta.idMeal) {
+      <ion-item>
+        <ion-thumbnail slot="start">
+          <img [src]="receta.strMealThumb" [alt]="receta.strMeal" />
+        </ion-thumbnail>
+        <ion-label>{{ receta.strMeal }}</ion-label>
+      </ion-item>
+    }
+  </ion-list>
 </ion-content>
