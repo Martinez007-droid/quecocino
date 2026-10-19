@@ -15,10 +15,19 @@ export class AuthService {
 
   constructor() {
     this.ready = new Promise(resolve => {
-      onAuthStateChanged(auth, u => {
-        this.user = u;
-        resolve();
-      });
+      const espera = setTimeout(() => resolve(), 4000);
+      onAuthStateChanged(
+        auth,
+        u => {
+          this.user = u;
+          clearTimeout(espera);
+          resolve();
+        },
+        () => {
+          clearTimeout(espera);
+          resolve();
+        }
+      );
     });
   }
 

@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import {
@@ -28,7 +28,8 @@ export class HomePage {
   constructor(
     private auth: AuthService,
     private recetasSrv: RecetasService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   async buscar() {
@@ -37,20 +38,18 @@ export class HomePage {
     }
     this.error = '';
     this.cargando = true;
+    this.cdr.detectChanges();
     try {
       this.recetas = await this.recetasSrv.buscarPorIngrediente(this.ingrediente);
       this.buscado = true;
-    } catch {
+    } catch (e) {
+      console.error('Error al buscar recetas:', e);
       this.recetas = [];
-      this.error = 'No se pudo consultar las recetas. Revisa tu conexión.';
+      this.error = 'No se pudo consultar las recetas. Revisa tu conexión e intenta de nuevo.';
     } finally {
       this.cargando = false;
+      this.cdr.detectChanges();
     }
-  }
-
-  async salir() {
-    await this.auth.logout();
-    this.router.navigate(['/login']);
   }
 
   abrir(id: string) {
@@ -59,5 +58,10 @@ export class HomePage {
 
   irAFavoritas() {
     this.router.navigate(['/favoritas']);
+  }
+
+  async salir() {
+    await this.auth.logout();
+    this.router.navigate(['/login']);
   }
 }
